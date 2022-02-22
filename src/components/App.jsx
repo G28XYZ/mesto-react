@@ -1,40 +1,14 @@
+import Footer from "./Footer";
+import Header from "./Header";
+import Main from "./Main";
+
 function App() {
   return (
     <>
       <div class="page">
-        <header class="header">
-          <img src="'./images/mesto-logo.svg'" alt="Логотип - место" class="header__logo" />
-        </header>
-
-        <main class="content">
-          <section class="profile">
-            <div class="profile__info">
-              <div class="profile__avatar-container">
-                <img
-                  src="<%=require('./images/avatar.jpg')%>"
-                  alt="Аватар"
-                  class="profile__avatar"
-                />
-              </div>
-              <div class="profile__heading">
-                <h1 class="profile__name">Жак-Ив Кусто</h1>
-                <button
-                  type="button"
-                  aria-label="Редактировать"
-                  class="profile__edit-button"
-                ></button>
-              </div>
-              <p class="profile__job">Исследователь океана</p>
-            </div>
-            <button aria-label="Добавить" type="button" class="profile__add-button"></button>
-          </section>
-
-          <section aria-label="Галлерея фотографий" class="gallery"></section>
-        </main>
-
-        <footer class="footer">
-          <p class="footer__copyright">&copy; 2020 Mesto Russia</p>
-        </footer>
+        <Header />
+        <Main />
+        <Footer />
       </div>
 
       <template id="place-template">
