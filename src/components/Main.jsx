@@ -1,44 +1,58 @@
-function Main() {
-  function handleEditAvatarClick() {
-    const popup = document.querySelector(".popup_type_avatar");
-    popup.classList.add("popup_opened");
-  }
-  function handleEditProfileClick() {
-    const popup = document.querySelector(".popup_type_edit");
-    popup.classList.add("popup_opened");
-  }
-  const handleAddPlaceClick = () => {
-    const popup = document.querySelector(".popup_type_add");
-    popup.classList.add("popup_opened");
-  };
+import React from "react";
+import api from "../utils/api";
+import Card from "./Card";
+
+function Main({ onEditProfile, onAddPlace, onEditAvatar, onCardClick }) {
+  const [userName, setUserName] = React.useState();
+  const [userDescription, setUserDescription] = React.useState();
+  const [userAvatar, setUserAvatar] = React.useState();
+  const [cards, setCards] = React.useState([]);
+
+  api
+    .getUserInfo()
+    .then(({ name, about, avatar }) => {
+      setUserName(name);
+      setUserDescription(about);
+      setUserAvatar(avatar);
+    })
+    .catch((err) => console.log(`Ошибка получения данных пользователя: ${err}`));
+
+  api
+    .getCards()
+    .then((cards) => setCards(cards))
+    .catch((err) => console.log(`Ошибка получения данных карточек: ${err}`));
 
   return (
-    <main class="content">
-      <section class="profile">
-        <div class="profile__info">
-          <div class="profile__avatar-container" onClick={handleEditAvatarClick}>
-            <img src="<%=require('./images/avatar.jpg')%>" alt="Аватар" class="profile__avatar" />
+    <main className="content">
+      <section className="profile">
+        <div className="profile__info">
+          <div className="profile__avatar-container" onClick={onEditAvatar}>
+            <img src={userAvatar} alt="Аватар" className="profile__avatar" />
           </div>
-          <div class="profile__heading">
-            <h1 class="profile__name">Жак-Ив Кусто</h1>
+          <div className="profile__heading">
+            <h1 className="profile__name">{userName}</h1>
             <button
-              onClick={handleEditProfileClick}
+              onClick={onEditProfile}
               type="button"
               aria-label="Редактировать"
-              class="profile__edit-button"
+              className="profile__edit-button"
             ></button>
           </div>
-          <p class="profile__job">Исследователь океана</p>
+          <p className="profile__job">{userDescription}</p>
         </div>
         <button
-          onClick={handleAddPlaceClick}
+          onClick={onAddPlace}
           aria-label="Добавить"
           type="button"
-          class="profile__add-button"
+          className="profile__add-button"
         ></button>
       </section>
 
-      <section aria-label="Галерея фотографий" class="gallery"></section>
+      <section aria-label="Галерея фотографий" className="gallery">
+        {cards.map((card) => (
+          <Card card={card} onCardClick={onCardClick} />
+        ))}
+      </section>
     </main>
   );
 }

@@ -1,7 +1,9 @@
+import logo from "../images/mesto-logo.svg";
+
 function Header() {
   return (
-    <header class="header">
-      <img src="'./images/mesto-logo.svg'" alt="Логотип - место" class="header__logo" />
+    <header className="header">
+      <img src={logo} alt="Логотип - место" className="header__logo" />
     </header>
   );
 }
