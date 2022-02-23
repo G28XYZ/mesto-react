@@ -1,26 +1,23 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import api from "../utils/api";
 import Card from "./Card";
 
 function Main({ onEditProfile, onAddPlace, onEditAvatar, onCardClick }) {
   const [userName, setUserName] = React.useState();
-  const [userDescription, setUserDescription] = React.useState();
-  const [userAvatar, setUserAvatar] = React.useState();
-  const [cards, setCards] = React.useState([]);
+  const [userDescription, setUserDescription] = useState();
+  const [userAvatar, setUserAvatar] = useState();
+  const [cards, setCards] = useState([]);
 
-  api
-    .getUserInfo()
-    .then(({ name, about, avatar }) => {
-      setUserName(name);
-      setUserDescription(about);
-      setUserAvatar(avatar);
-    })
-    .catch((err) => console.log(`Ошибка получения данных пользователя: ${err}`));
-
-  api
-    .getCards()
-    .then((cards) => setCards(cards))
-    .catch((err) => console.log(`Ошибка получения данных карточек: ${err}`));
+  useEffect(() => {
+    Promise.all([api.getUserInfo(), api.getCards()])
+      .then(([{ name, about, avatar }, cards]) => {
+        setUserName(name);
+        setUserDescription(about);
+        setUserAvatar(avatar);
+        setCards(cards);
+      })
+      .catch((err) => console.log(`Ошибка получения данных пользователя/карточек: ${err}`));
+  });
 
   return (
     <main className="content">

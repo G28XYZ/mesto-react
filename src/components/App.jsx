@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Footer from "./Footer";
 import Header from "./Header";
 import ImagePopup from "./ImagePopup";
@@ -6,23 +6,23 @@ import Main from "./Main";
 import PopupWithForm from "./PopupWithForm";
 
 function App() {
-  const [children, setChildren] = React.useState();
-  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
-  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
-  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
-  const [name, setName] = React.useState();
-  const [title, setTitle] = React.useState();
-  const [selectedCard, setSelectedCard] = React.useState({});
+  const [children, setChildren] = useState();
+  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
+  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
+  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
+  const [name, setName] = useState();
+  const [title, setTitle] = useState();
+  const [selectedCard, setSelectedCard] = useState({ isOpen: false });
 
   function closeAllPopups() {
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
-    setSelectedCard({});
+    setSelectedCard({ ...selectedCard, isOpen: false });
   }
 
   function handleCardClick(data) {
-    setSelectedCard(data);
+    setSelectedCard({ isOpen: true, ...data });
   }
 
   function onEditProfile() {
@@ -117,6 +117,7 @@ function App() {
         name={name}
         title={title}
         children={children}
+        onClose={closeAllPopups}
         isOpen={isEditProfilePopupOpen || isAddPlacePopupOpen || isEditAvatarPopupOpen}
       />
       <ImagePopup card={selectedCard} onClose={closeAllPopups} />
