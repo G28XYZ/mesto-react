@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import api from "../utils/api";
 import Card from "./Card";
 
 function Main({ onEditProfile, onAddPlace, onEditAvatar, onCardClick }) {
-  const [userName, setUserName] = React.useState();
+  const [userName, setUserName] = useState();
   const [userDescription, setUserDescription] = useState();
   const [userAvatar, setUserAvatar] = useState();
   const [cards, setCards] = useState([]);
@@ -46,8 +46,8 @@ function Main({ onEditProfile, onAddPlace, onEditAvatar, onCardClick }) {
       </section>
 
       <section aria-label="Галерея фотографий" className="gallery">
-        {cards.map((card) => (
-          <Card card={card} onCardClick={onCardClick} />
+        {cards.map((card, i) => (
+          <Card key={i} card={card} onCardClick={onCardClick} />
         ))}
       </section>
     </main>

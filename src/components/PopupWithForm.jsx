@@ -11,7 +11,9 @@ function PopupWithForm({ name, title, isOpen, children, onClose }) {
         <h3 className="popup__title">{title}</h3>
         <form name={name} className="popup__form">
           {children}
-          <button type="submit" className="popup__button"></button>
+          <button type="submit" className="popup__button">
+            {name === "add" ? "Создать" : "Сохранить"}
+          </button>
         </form>
       </div>
     </div>
