@@ -1,4 +1,6 @@
-function PopupWithForm({ name, title, isOpen, children, onClose }) {
+import React from "react";
+
+function PopupWithForm({ name, title, textButton, isOpen, onClose, children }) {
   return (
     <div className={`popup popup_type_${name} ${isOpen ? "popup_opened" : ""}`}>
       <div className="popup__container">
@@ -12,7 +14,7 @@ function PopupWithForm({ name, title, isOpen, children, onClose }) {
         <form name={name} className="popup__form">
           {children}
           <button type="submit" className="popup__button">
-            {name === "add" ? "Создать" : "Сохранить"}
+            {textButton}
           </button>
         </form>
       </div>

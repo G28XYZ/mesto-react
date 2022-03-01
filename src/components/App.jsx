@@ -6,12 +6,12 @@ import Main from "./Main";
 import PopupWithForm from "./PopupWithForm";
 
 function App() {
-  const [children, setChildren] = useState(<></>);
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [name, setName] = useState("");
   const [title, setTitle] = useState("");
+  const [textButton, seTextButton] = useState("");
   const [selectedCard, setSelectedCard] = useState({ isOpen: false });
 
   function closeAllPopups() {
@@ -26,78 +26,23 @@ function App() {
   }
 
   function onEditProfile() {
-    setChildren(
-      <div className="popup__input-container">
-        <input
-          placeholder="Имя"
-          type="text"
-          name="name"
-          className="popup__input popup__input_elem_name"
-          minLength="2"
-          maxLength="40"
-          required
-        />
-        <span className="popup__error popup__error-name"></span>
-        <input
-          placeholder="Работа"
-          type="text"
-          name="about"
-          className="popup__input popup__input_elem_about"
-          minLength="2"
-          maxLength="200"
-          required
-        />
-        <span className="popup__error popup__error-about"></span>
-      </div>
-    );
     setName("edit");
     setTitle("Редактировать профиль");
+    seTextButton("Сохранить");
     setIsEditProfilePopupOpen(!isEditProfilePopupOpen);
   }
 
   function onAddPlace() {
-    setChildren(
-      <div className="popup__input-container">
-        <input
-          placeholder="Название"
-          type="text"
-          name="name"
-          required
-          className="popup__input popup__input_elem_name"
-          minLength="2"
-          maxLength="30"
-        />
-        <span className="popup__error popup__error-name"></span>
-        <input
-          placeholder="Ссылка на картинку"
-          type="url"
-          name="link"
-          required
-          className="popup__input popup__input_elem_link"
-        />
-        <span className="popup__error popup__error-link"></span>
-      </div>
-    );
     setName("add");
     setTitle("Новое место");
+    seTextButton("Создать");
     setIsAddPlacePopupOpen(!isAddPlacePopupOpen);
   }
 
   function onEditAvatar() {
-    setChildren(
-      <div className="popup__input-container">
-        <input
-          placeholder="Ссылка на картинку"
-          type="url"
-          name="link"
-          required
-          className="popup__input popup__input_elem_link"
-        />
-        <span className="popup__error popup__error-link"></span>
-      </div>
-    );
     setName("avatar");
     setTitle("Обновить аватар");
+    seTextButton("Сохранить");
     setIsEditAvatarPopupOpen(!isEditAvatarPopupOpen);
   }
 
@@ -116,10 +61,82 @@ function App() {
       <PopupWithForm
         name={name}
         title={title}
-        children={children}
+        textButton={textButton}
         onClose={closeAllPopups}
-        isOpen={isEditProfilePopupOpen || isAddPlacePopupOpen || isEditAvatarPopupOpen}
-      />
+        isOpen={isEditProfilePopupOpen}
+      >
+        <div className="popup__input-container">
+          <input
+            placeholder="Имя"
+            type="text"
+            name="name"
+            className="popup__input popup__input_elem_name"
+            minLength="2"
+            maxLength="40"
+            required
+          />
+          <span className="popup__error popup__error-name"></span>
+          <input
+            placeholder="Работа"
+            type="text"
+            name="about"
+            className="popup__input popup__input_elem_about"
+            minLength="2"
+            maxLength="200"
+            required
+          />
+          <span className="popup__error popup__error-about"></span>
+        </div>
+      </PopupWithForm>
+
+      <PopupWithForm
+        name={name}
+        title={title}
+        textButton={textButton}
+        onClose={closeAllPopups}
+        isOpen={isAddPlacePopupOpen}
+      >
+        <div className="popup__input-container">
+          <input
+            placeholder="Название"
+            type="text"
+            name="name"
+            required
+            className="popup__input popup__input_elem_name"
+            minLength="2"
+            maxLength="30"
+          />
+          <span className="popup__error popup__error-name"></span>
+          <input
+            placeholder="Ссылка на картинку"
+            type="url"
+            name="link"
+            required
+            className="popup__input popup__input_elem_link"
+          />
+          <span className="popup__error popup__error-link"></span>
+        </div>
+      </PopupWithForm>
+
+      <PopupWithForm
+        name={name}
+        title={title}
+        textButton={textButton}
+        onClose={closeAllPopups}
+        isOpen={isEditAvatarPopupOpen}
+      >
+        <div className="popup__input-container">
+          <input
+            placeholder="Ссылка на картинку"
+            type="url"
+            name="link"
+            required
+            className="popup__input popup__input_elem_link"
+          />
+          <span className="popup__error popup__error-link"></span>
+        </div>
+      </PopupWithForm>
+
       <ImagePopup card={selectedCard} onClose={closeAllPopups} />
     </>
   );
