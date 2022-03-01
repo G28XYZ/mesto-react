@@ -21,8 +21,9 @@ function App() {
     setSelectedCard({ ...selectedCard, isOpen: false });
   }
 
-  function handleCardClick(data) {
-    setSelectedCard({ isOpen: true, ...data });
+  function handleCardClick(event) {
+    console.log(event.target.src);
+    setSelectedCard({ isOpen: true, link: event.target.src, name: event.target.alt });
   }
 
   function onEditProfile() {
