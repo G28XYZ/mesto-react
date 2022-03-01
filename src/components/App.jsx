@@ -6,12 +6,12 @@ import Main from "./Main";
 import PopupWithForm from "./PopupWithForm";
 
 function App() {
-  const [children, setChildren] = useState();
+  const [children, setChildren] = useState(<></>);
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
-  const [name, setName] = useState();
-  const [title, setTitle] = useState();
+  const [name, setName] = useState("");
+  const [title, setTitle] = useState("");
   const [selectedCard, setSelectedCard] = useState({ isOpen: false });
 
   function closeAllPopups() {

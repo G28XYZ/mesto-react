@@ -17,7 +17,7 @@ function Main({ onEditProfile, onAddPlace, onEditAvatar, onCardClick }) {
         setCards(cards);
       })
       .catch((err) => console.log(`Ошибка получения данных пользователя/карточек: ${err}`));
-  });
+  }, []);
 
   return (
     <main className="content">
@@ -46,8 +46,8 @@ function Main({ onEditProfile, onAddPlace, onEditAvatar, onCardClick }) {
       </section>
 
       <section aria-label="Галерея фотографий" className="gallery">
-        {cards.map((card, i) => (
-          <Card key={i} card={card} onCardClick={onCardClick} />
+        {cards.map((card) => (
+          <Card key={card._id} card={card} onCardClick={onCardClick} />
         ))}
       </section>
     </main>
