@@ -6,6 +6,7 @@ import Main from "./Main";
 import PopupWithForm from "./PopupWithForm";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import api from "../utils/api";
+import EditProfilePopup from "./EditProfilePopup";
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
@@ -47,7 +48,6 @@ function App() {
   function onEditProfile() {
     setName("edit");
     setTitle("Редактировать профиль");
-    seTextButton("Сохранить");
     setIsEditProfilePopupOpen(!isEditProfilePopupOpen);
   }
 
@@ -61,8 +61,14 @@ function App() {
   function onEditAvatar() {
     setName("avatar");
     setTitle("Обновить аватар");
-    seTextButton("Сохранить");
     setIsEditAvatarPopupOpen(!isEditAvatarPopupOpen);
+  }
+
+  function onUpdateUser(user) {
+    api
+      .patchProfile(user)
+      .then((data) => setCurrentUser(data))
+      .catch((err) => console.log(`Ошибка изменения профиля: ${err}`));
   }
 
   return (
@@ -77,36 +83,12 @@ function App() {
         />
         <Footer />
       </div>
-      <PopupWithForm
-        name={name}
+      <EditProfilePopup
         title={title}
-        textButton={textButton}
         onClose={closeAllPopups}
         isOpen={isEditProfilePopupOpen}
-      >
-        <div className="popup__input-container">
-          <input
-            placeholder="Имя"
-            type="text"
-            name="name"
-            className="popup__input popup__input_elem_name"
-            minLength="2"
-            maxLength="40"
-            required
-          />
-          <span className="popup__error popup__error-name"></span>
-          <input
-            placeholder="Работа"
-            type="text"
-            name="about"
-            className="popup__input popup__input_elem_about"
-            minLength="2"
-            maxLength="200"
-            required
-          />
-          <span className="popup__error popup__error-about"></span>
-        </div>
-      </PopupWithForm>
+        onUpdateUser={onUpdateUser}
+      />
 
       <PopupWithForm
         name={name}
@@ -140,7 +122,6 @@ function App() {
       <PopupWithForm
         name={name}
         title={title}
-        textButton={textButton}
         onClose={closeAllPopups}
         isOpen={isEditAvatarPopupOpen}
       >
