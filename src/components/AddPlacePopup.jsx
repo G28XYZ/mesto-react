@@ -11,7 +11,6 @@ function AddPlacePopup({ isOpen, onClose, onUpdateCards }) {
   function handleSubmit(e) {
     e.preventDefault();
     onUpdateCards(card);
-    onClose();
   }
 
   return (

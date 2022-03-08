@@ -18,7 +18,6 @@ function EditProfilePopup({ onClose, isOpen, onUpdateUser }) {
   function handleSubmit(e) {
     e.preventDefault();
     onUpdateUser(user);
-    onClose();
   }
 
   return (

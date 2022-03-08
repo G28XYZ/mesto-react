@@ -4,6 +4,7 @@ import Header from "./Header";
 import ImagePopup from "./ImagePopup";
 import Main from "./Main";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
+import { RenderLoadingContext } from "../contexts/RenderLoadingContext";
 import api from "../utils/api";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
@@ -17,28 +18,17 @@ function App() {
   const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState({ isOpen: false });
   const [currentUser, setCurrentUser] = useState({});
-
   const [cards, setCards] = useState([]);
+  const [laoding, setLoading] = useState(false);
 
   useEffect(() => {
-    api
-      .getCards()
-      .then((cards) => {
+    Promise.all([api.getUserInfo(), api.getCards()])
+      .then(([user, cards]) => {
+        setCurrentUser(user);
         setCards(cards);
       })
       .catch((err) =>
-        console.log(`Ошибка получения данных пользователя/карточек: ${err}`)
-      );
-  }, []);
-
-  useEffect(() => {
-    api
-      .getUserInfo()
-      .then((user) => {
-        setCurrentUser(user);
-      })
-      .catch((err) =>
-        console.log(`Ошибка получение данных о пользователе: ${err}`)
+        console.log(`Ошибка получения карточек/пользователя: ${err}`)
       );
   }, []);
 
@@ -90,7 +80,6 @@ function App() {
 
   function onEditProfile() {
     setIsEditProfilePopupOpen(!isEditProfilePopupOpen);
-    onUpdateUser(currentUser);
   }
 
   function onAddPlace() {
@@ -102,24 +91,39 @@ function App() {
   }
 
   function onUpdateUser(user) {
+    setLoading(true);
     api
       .patchProfile(user)
-      .then((data) => setCurrentUser(data))
-      .catch((err) => console.log(`Ошибка изменения профиля: ${err}`));
+      .then((data) => {
+        setCurrentUser(data);
+        closeAllPopups();
+      })
+      .catch((err) => console.log(`Ошибка изменения профиля: ${err}`))
+      .finally(() => setLoading(false));
   }
 
   function onUpdateAvatar({ avatar }) {
+    setLoading(true);
     api
       .patchAvatar(avatar)
-      .then((user) => setCurrentUser(user))
-      .catch((err) => console.log(`Ошибка изменения аватар: ${err}`));
+      .then((user) => {
+        setCurrentUser(user);
+        closeAllPopups();
+      })
+      .catch((err) => console.log(`Ошибка изменения аватар: ${err}`))
+      .finally(() => setLoading(false));
   }
 
   function onUpdateCards(card) {
+    setLoading(true);
     api
       .postCard(card)
-      .then((newCard) => setCards([newCard, ...cards]))
-      .catch((err) => console.log(`Ошибка добавления карточки: ${err}`));
+      .then((newCard) => {
+        setCards([newCard, ...cards]);
+        closeAllPopups();
+      })
+      .catch((err) => console.log(`Ошибка добавления карточки: ${err}`))
+      .finally(() => setLoading(false));
   }
 
   return (
@@ -138,23 +142,25 @@ function App() {
         />
         <Footer />
       </div>
-      <EditProfilePopup
-        onClose={closeAllPopups}
-        isOpen={isEditProfilePopupOpen}
-        onUpdateUser={onUpdateUser}
-      />
+      <RenderLoadingContext.Provider value={laoding}>
+        <EditProfilePopup
+          onClose={closeAllPopups}
+          isOpen={isEditProfilePopupOpen}
+          onUpdateUser={onUpdateUser}
+        />
 
-      <AddPlacePopup
-        onClose={closeAllPopups}
-        isOpen={isAddPlacePopupOpen}
-        onUpdateCards={onUpdateCards}
-      />
+        <AddPlacePopup
+          onClose={closeAllPopups}
+          isOpen={isAddPlacePopupOpen}
+          onUpdateCards={onUpdateCards}
+        />
 
-      <EditAvatarPopup
-        isOpen={isEditAvatarPopupOpen}
-        onClose={closeAllPopups}
-        onUpdateAvatar={onUpdateAvatar}
-      />
+        <EditAvatarPopup
+          isOpen={isEditAvatarPopupOpen}
+          onClose={closeAllPopups}
+          onUpdateAvatar={onUpdateAvatar}
+        />
+      </RenderLoadingContext.Provider>
 
       <ConfirmDeletePopup
         isOpen={isDeletePopupOpen}
