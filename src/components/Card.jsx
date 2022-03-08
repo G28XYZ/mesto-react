@@ -1,7 +1,8 @@
-import { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
-function Card({ card, onCardClick, onCardLike }) {
+function Card({ card, onCardClick, onCardLike, onDeleteCard }) {
+  const [_isLiked, _setIsLiked] = useState(false);
   const { _id } = useContext(CurrentUserContext);
   const isOwn = card.owner._id === _id;
   const isLiked = card.likes.some((i) => i._id === _id);
@@ -22,6 +23,7 @@ function Card({ card, onCardClick, onCardLike }) {
           aria-label="Удалить"
           type="button"
           className="place__delete"
+          onClick={onDeleteCard.bind(this, card._id)}
         ></button>
       )}
       <div className="place__row">
@@ -31,7 +33,7 @@ function Card({ card, onCardClick, onCardLike }) {
             aria-label="Лайк"
             type="button"
             className={cardLikeButtonClassName}
-            onClick={() => onCardLike(card)}
+            onClick={onCardLike.bind(this, card)}
           ></button>
           <p className="place__like-count">{card.likes.length}</p>
         </div>
