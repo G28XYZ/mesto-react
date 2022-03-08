@@ -7,14 +7,12 @@ import PopupWithForm from "./PopupWithForm";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import api from "../utils/api";
 import EditProfilePopup from "./EditProfilePopup";
+import EditAvatarPopup from "./EditAvatarPopup";
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
-  const [name, setName] = useState("");
-  const [title, setTitle] = useState("");
-  const [textButton, seTextButton] = useState("");
   const [selectedCard, setSelectedCard] = useState({ isOpen: false });
   const [currentUser, setCurrentUser] = useState({});
 
@@ -46,21 +44,15 @@ function App() {
   }
 
   function onEditProfile() {
-    setName("edit");
-    setTitle("Редактировать профиль");
     setIsEditProfilePopupOpen(!isEditProfilePopupOpen);
+    onUpdateUser(currentUser);
   }
 
   function onAddPlace() {
-    setName("add");
-    setTitle("Новое место");
-    seTextButton("Создать");
     setIsAddPlacePopupOpen(!isAddPlacePopupOpen);
   }
 
   function onEditAvatar() {
-    setName("avatar");
-    setTitle("Обновить аватар");
     setIsEditAvatarPopupOpen(!isEditAvatarPopupOpen);
   }
 
@@ -69,6 +61,13 @@ function App() {
       .patchProfile(user)
       .then((data) => setCurrentUser(data))
       .catch((err) => console.log(`Ошибка изменения профиля: ${err}`));
+  }
+
+  function onUpdateAvatar({ avatar }) {
+    api
+      .patchAvatar(avatar)
+      .then((user) => setCurrentUser(user))
+      .catch((err) => console.log(`Ошибка изменения аватар: ${err}`));
   }
 
   return (
@@ -84,16 +83,15 @@ function App() {
         <Footer />
       </div>
       <EditProfilePopup
-        title={title}
         onClose={closeAllPopups}
         isOpen={isEditProfilePopupOpen}
         onUpdateUser={onUpdateUser}
       />
 
       <PopupWithForm
-        name={name}
-        title={title}
-        textButton={textButton}
+        name="add"
+        title="Новое место"
+        textButton="Создать"
         onClose={closeAllPopups}
         isOpen={isAddPlacePopupOpen}
       >
@@ -119,23 +117,11 @@ function App() {
         </div>
       </PopupWithForm>
 
-      <PopupWithForm
-        name={name}
-        title={title}
-        onClose={closeAllPopups}
+      <EditAvatarPopup
         isOpen={isEditAvatarPopupOpen}
-      >
-        <div className="popup__input-container">
-          <input
-            placeholder="Ссылка на картинку"
-            type="url"
-            name="link"
-            required
-            className="popup__input popup__input_elem_link"
-          />
-          <span className="popup__error popup__error-link"></span>
-        </div>
-      </PopupWithForm>
+        onClose={closeAllPopups}
+        onUpdateAvatar={onUpdateAvatar}
+      />
 
       <ImagePopup card={selectedCard} onClose={closeAllPopups} />
     </CurrentUserContext.Provider>
