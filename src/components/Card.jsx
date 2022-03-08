@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
-function Card({ card, onCardClick, onCardLike, onDeleteCard }) {
+function Card({ card, onCardClick, onCardLike, onCardDelete }) {
   const [_isLiked, _setIsLiked] = useState(false);
   const { _id } = useContext(CurrentUserContext);
   const isOwn = card.owner._id === _id;
@@ -23,7 +23,7 @@ function Card({ card, onCardClick, onCardLike, onDeleteCard }) {
           aria-label="Удалить"
           type="button"
           className="place__delete"
-          onClick={onDeleteCard.bind(this, card._id)}
+          onClick={onCardDelete.bind(this, card._id)}
         ></button>
       )}
       <div className="place__row">
