@@ -1,22 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import api from "../utils/api";
 import Card from "./Card";
+import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
 function Main({ onEditProfile, onAddPlace, onEditAvatar, onCardClick }) {
-  const [userName, setUserName] = useState();
-  const [userDescription, setUserDescription] = useState();
-  const [userAvatar, setUserAvatar] = useState();
   const [cards, setCards] = useState([]);
+  const { name, about, avatar, _id } = useContext(CurrentUserContext);
 
   useEffect(() => {
-    Promise.all([api.getUserInfo(), api.getCards()])
-      .then(([{ name, about, avatar }, cards]) => {
-        setUserName(name);
-        setUserDescription(about);
-        setUserAvatar(avatar);
+    api
+      .getCards()
+      .then((cards) => {
         setCards(cards);
       })
-      .catch((err) => console.log(`Ошибка получения данных пользователя/карточек: ${err}`));
+      .catch((err) =>
+        console.log(`Ошибка получения данных пользователя/карточек: ${err}`)
+      );
   }, []);
 
   return (
@@ -24,10 +23,10 @@ function Main({ onEditProfile, onAddPlace, onEditAvatar, onCardClick }) {
       <section className="profile">
         <div className="profile__info">
           <div className="profile__avatar-container" onClick={onEditAvatar}>
-            <img src={userAvatar} alt="Аватар" className="profile__avatar" />
+            <img src={avatar} alt="Аватар" className="profile__avatar" />
           </div>
           <div className="profile__heading">
-            <h1 className="profile__name">{userName}</h1>
+            <h1 className="profile__name">{name}</h1>
             <button
               onClick={onEditProfile}
               type="button"
@@ -35,7 +34,7 @@ function Main({ onEditProfile, onAddPlace, onEditAvatar, onCardClick }) {
               className="profile__edit-button"
             ></button>
           </div>
-          <p className="profile__job">{userDescription}</p>
+          <p className="profile__job">{about}</p>
         </div>
         <button
           onClick={onAddPlace}
