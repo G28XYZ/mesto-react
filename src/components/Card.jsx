@@ -1,15 +1,13 @@
 import { useContext } from "react";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
-function Card({ card, onCardClick }) {
+function Card({ card, onCardClick, onCardLike }) {
   const { _id } = useContext(CurrentUserContext);
   const isOwn = card.owner._id === _id;
-  const isLiked = card.likes.includes(_id);
+  const isLiked = card.likes.some((i) => i._id === _id);
   const cardLikeButtonClassName = isLiked
     ? "place__like place__like_active"
     : "place__like";
-
-  console.log(isLiked);
 
   return (
     <article key={card._id} className="place">
@@ -33,6 +31,7 @@ function Card({ card, onCardClick }) {
             aria-label="Лайк"
             type="button"
             className={cardLikeButtonClassName}
+            onClick={() => onCardLike(card)}
           ></button>
           <p className="place__like-count">{card.likes.length}</p>
         </div>

@@ -11,7 +11,9 @@ class Api {
   }
 
   _handleResponse = (response) => {
-    return response.ok ? response.json() : Promise.reject(`Ошибка ${response.status}`);
+    return response.ok
+      ? response.json()
+      : Promise.reject(`Ошибка ${response.status}`);
   };
 
   getCards() {
@@ -69,7 +71,7 @@ class Api {
     }).then(this._handleResponse);
   }
 
-  likeCard({ cardId, isLiked }) {
+  likeCard(cardId, isLiked) {
     return isLiked ? this._deleteLike(cardId) : this._putLike(cardId);
   }
 
