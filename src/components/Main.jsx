@@ -11,6 +11,7 @@ function Main({
   onCardClick,
   onCardDelete,
   onCardLike,
+  onConfirmDelete,
 }) {
   const { name, about, avatar } = useContext(CurrentUserContext);
 
@@ -48,6 +49,7 @@ function Main({
             onCardClick={onCardClick}
             onCardLike={onCardLike}
             onCardDelete={onCardDelete}
+            onConfirmDelete={onConfirmDelete}
           />
         ))}
       </section>
