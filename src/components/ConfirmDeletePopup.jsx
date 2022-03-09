@@ -9,7 +9,7 @@ function ConfirmDeletePopup({ onClose, isOpen, onCardDelete }) {
       onClose={onClose}
       isOpen={isOpen}
       onSubmit={onCardDelete}
-    ></PopupWithForm>
+    />
   );
 }
 
