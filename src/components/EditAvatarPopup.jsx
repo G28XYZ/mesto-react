@@ -1,8 +1,9 @@
-import { createRef } from "react";
+import { createRef, useState } from "react";
 import PopupWithForm from "./PopupWithForm";
 
 function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
   const avatar = createRef();
+  const [error, setError] = useState("");
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -12,6 +13,12 @@ function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
     });
   }
 
+  function handleChange() {
+    setError(avatar.current.validationMessage);
+  }
+
+  const toggleError = (msg) => `popup__error ${msg && " popup__error_visible"}`;
+
   return (
     <PopupWithForm
       name="avatar"
@@ -19,6 +26,7 @@ function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
       onClose={onClose}
       isOpen={isOpen}
       onSubmit={handleSubmit}
+      isDisabled={error}
     >
       <div className="popup__input-container">
         <input
@@ -26,10 +34,11 @@ function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
           type="url"
           name="link"
           required
+          onChange={handleChange}
           className="popup__input popup__input_elem_link"
           ref={avatar}
         />
-        <span className="popup__error popup__error-link"></span>
+        <span className={toggleError(error)}>{error}</span>
       </div>
     </PopupWithForm>
   );

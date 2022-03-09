@@ -6,6 +6,7 @@ function EditProfilePopup({ onClose, isOpen, onUpdateUser }) {
   const currentUser = useContext(CurrentUserContext);
 
   const [user, setUser] = useState(currentUser);
+  const [error, setError] = useState({ name: "", about: "" });
 
   useEffect(() => {
     setUser(currentUser);
@@ -13,12 +14,19 @@ function EditProfilePopup({ onClose, isOpen, onUpdateUser }) {
 
   function handleChange(e) {
     setUser({ ...user, [e.target.name]: e.target.value });
+    setError({ ...error, [e.target.name]: e.target.validationMessage });
   }
 
   function handleSubmit(e) {
     e.preventDefault();
     onUpdateUser(user);
   }
+
+  const toggleError = (msg) => `popup__error ${msg && " popup__error_visible"}`;
+
+  const isDisabled = () =>
+    Object.keys(error).some((e) => error[e]) ||
+    Object.keys(user).some((u) => !user[u]);
 
   return (
     <PopupWithForm
@@ -27,6 +35,7 @@ function EditProfilePopup({ onClose, isOpen, onUpdateUser }) {
       onClose={onClose}
       isOpen={isOpen}
       onSubmit={handleSubmit}
+      isDisabled={isDisabled()}
     >
       <div className="popup__input-container">
         <input
@@ -40,7 +49,7 @@ function EditProfilePopup({ onClose, isOpen, onUpdateUser }) {
           onChange={handleChange}
           required
         />
-        <span className="popup__error popup__error-name"></span>
+        <span className={toggleError(error.name)}>{error.name}</span>
         <input
           placeholder="Работа"
           type="text"
@@ -52,7 +61,7 @@ function EditProfilePopup({ onClose, isOpen, onUpdateUser }) {
           onChange={handleChange}
           required
         />
-        <span className="popup__error popup__error-about"></span>
+        <span className={toggleError(error.about)}>{error.about}</span>
       </div>
     </PopupWithForm>
   );

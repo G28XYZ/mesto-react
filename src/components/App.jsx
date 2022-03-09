@@ -19,7 +19,7 @@ function App() {
   const [selectedCard, setSelectedCard] = useState({ isOpen: false });
   const [currentUser, setCurrentUser] = useState({});
   const [cards, setCards] = useState([]);
-  const [laoding, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     Promise.all([api.getUserInfo(), api.getCards()])
@@ -142,7 +142,7 @@ function App() {
         />
         <Footer />
       </div>
-      <RenderLoadingContext.Provider value={laoding}>
+      <RenderLoadingContext.Provider value={loading}>
         <EditProfilePopup
           onClose={closeAllPopups}
           isOpen={isEditProfilePopupOpen}

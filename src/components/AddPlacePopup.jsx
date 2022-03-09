@@ -2,16 +2,25 @@ import { useState } from "react";
 import PopupWithForm from "./PopupWithForm";
 
 function AddPlacePopup({ isOpen, onClose, onUpdateCards }) {
-  const [card, setCard] = useState({});
+  const [card, setCard] = useState({ name: "", link: "" });
+  const [error, setError] = useState({ name: "", link: "" });
 
   function handleChange(e) {
     setCard({ ...card, [e.target.name]: e.target.value });
+    setError({ ...error, [e.target.name]: e.target.validationMessage });
   }
 
   function handleSubmit(e) {
     e.preventDefault();
     onUpdateCards(card);
   }
+
+  const toggleError = (msg) =>
+    msg ? "popup__error popup__error_visible" : "popup__error";
+
+  const isDisabled = () =>
+    Object.keys(error).some((e) => error[e]) ||
+    Object.keys(card).some((c) => !card[c]);
 
   return (
     <PopupWithForm
@@ -21,6 +30,7 @@ function AddPlacePopup({ isOpen, onClose, onUpdateCards }) {
       onClose={onClose}
       isOpen={isOpen}
       onSubmit={handleSubmit}
+      isDisabled={isDisabled()}
     >
       <div className="popup__input-container">
         <input
@@ -33,7 +43,7 @@ function AddPlacePopup({ isOpen, onClose, onUpdateCards }) {
           maxLength="30"
           onChange={handleChange}
         />
-        <span className="popup__error popup__error-name"></span>
+        <span className={toggleError(error.name)}>{error.name}</span>
         <input
           placeholder="Ссылка на картинку"
           type="url"
@@ -42,7 +52,7 @@ function AddPlacePopup({ isOpen, onClose, onUpdateCards }) {
           className="popup__input popup__input_elem_link"
           onChange={handleChange}
         />
-        <span className="popup__error popup__error-link"></span>
+        <span className={toggleError(error.link)}>{error.link}</span>
       </div>
     </PopupWithForm>
   );
