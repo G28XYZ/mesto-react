@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, useMemo } from "react";
 import PopupWithForm from "./PopupWithForm";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
@@ -25,9 +25,13 @@ function EditProfilePopup({ onClose, isOpen, onUpdateUser }) {
 
   const toggleError = (msg) => `popup__error ${msg && " popup__error_visible"}`;
 
-  const isDisabled = () =>
-    Object.keys(error).some((e) => error[e]) ||
-    Object.keys(user).some((u) => !user[u]);
+  // isDisabled = true если есть текст об ошибке или инпут пустой
+  const isDisabled = useMemo(() => {
+    return (
+      Object.keys(error).some((e) => error[e]) ||
+      Object.keys(user).some((u) => !user[u])
+    );
+  }, [user]);
 
   return (
     <PopupWithForm
@@ -36,7 +40,7 @@ function EditProfilePopup({ onClose, isOpen, onUpdateUser }) {
       onClose={onClose}
       isOpen={isOpen}
       onSubmit={handleSubmit}
-      isDisabled={isDisabled()}
+      isDisabled={isDisabled}
     >
       <div className="popup__input-container">
         <input
