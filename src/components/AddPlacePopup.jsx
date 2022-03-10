@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import PopupWithForm from "./PopupWithForm";
 
 function AddPlacePopup({ isOpen, onClose, onUpdateCards }) {
@@ -23,9 +23,13 @@ function AddPlacePopup({ isOpen, onClose, onUpdateCards }) {
   const toggleError = (msg) =>
     msg ? "popup__error popup__error_visible" : "popup__error";
 
-  const isDisabled = () =>
-    Object.keys(error).some((e) => error[e]) ||
-    Object.keys(card).some((c) => !card[c]);
+  // isDisabled = true если есть текст об ошибке или инпут пустой
+  const isDisabled = useMemo(
+    () =>
+      Object.keys(error).some((e) => error[e]) ||
+      Object.keys(card).some((c) => !card[c]),
+    [card]
+  );
 
   return (
     <PopupWithForm
@@ -35,7 +39,7 @@ function AddPlacePopup({ isOpen, onClose, onUpdateCards }) {
       onClose={onClose}
       isOpen={isOpen}
       onSubmit={handleSubmit}
-      isDisabled={isDisabled()}
+      isDisabled={isDisabled}
     >
       <div className="popup__input-container">
         <input

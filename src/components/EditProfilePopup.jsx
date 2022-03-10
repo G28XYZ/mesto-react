@@ -26,12 +26,13 @@ function EditProfilePopup({ onClose, isOpen, onUpdateUser }) {
   const toggleError = (msg) => `popup__error ${msg && " popup__error_visible"}`;
 
   // isDisabled = true если есть текст об ошибке или инпут пустой
-  const isDisabled = useMemo(() => {
-    return (
+  const isDisabled = useMemo(
+    () =>
       Object.keys(error).some((e) => error[e]) ||
-      Object.keys(user).some((u) => !user[u])
-    );
-  }, [user]);
+      Object.keys(user).some((u) => !user[u]),
+
+    [user]
+  );
 
   return (
     <PopupWithForm
