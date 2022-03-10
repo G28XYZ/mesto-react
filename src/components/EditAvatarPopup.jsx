@@ -1,13 +1,19 @@
-import { createRef, useState } from "react";
+import { createRef, useEffect, useState } from "react";
 import PopupWithForm from "./PopupWithForm";
 
 function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
   const avatar = createRef();
   const [error, setError] = useState("");
+  const [isDisabled, setIsDisabled] = useState(true);
+
+  useEffect(() => {
+    setError("");
+    avatar.current.value = "";
+    setIsDisabled(true);
+  }, [isOpen]);
 
   function handleSubmit(e) {
     e.preventDefault();
-
     onUpdateAvatar({
       avatar: avatar.current.value,
     });
@@ -15,6 +21,9 @@ function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
 
   function handleChange() {
     setError(avatar.current.validationMessage);
+    if (!avatar.current.value || avatar.current.validationMessage)
+      setIsDisabled(true);
+    else setIsDisabled(false);
   }
 
   const toggleError = (msg) => `popup__error ${msg && " popup__error_visible"}`;
@@ -26,17 +35,18 @@ function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
       onClose={onClose}
       isOpen={isOpen}
       onSubmit={handleSubmit}
-      isDisabled={error}
+      isDisabled={isDisabled}
     >
       <div className="popup__input-container">
         <input
+          ref={avatar}
           placeholder="Ссылка на картинку"
           type="url"
           name="link"
-          required
+          value={avatar.current?.value}
           onChange={handleChange}
           className="popup__input popup__input_elem_link"
-          ref={avatar}
+          required
         />
         <span className={toggleError(error)}>{error}</span>
       </div>

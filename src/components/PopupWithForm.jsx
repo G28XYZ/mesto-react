@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from "react";
+import React, { useContext } from "react";
 import { RenderLoadingContext } from "../contexts/RenderLoadingContext";
 
 function PopupWithForm({
@@ -12,9 +12,7 @@ function PopupWithForm({
   isDisabled,
 }) {
   const loading = useContext(RenderLoadingContext);
-  textButton = useMemo(() => (loading ? "Сохранение..." : textButton), [
-    loading,
-  ]);
+  textButton = loading ? "Сохранение..." : textButton;
 
   return (
     <div className={`popup popup_type_${name} ${isOpen && "popup_opened"}`}>

@@ -10,7 +10,8 @@ function EditProfilePopup({ onClose, isOpen, onUpdateUser }) {
 
   useEffect(() => {
     setUser(currentUser);
-  }, [currentUser]);
+    setError({ name: "", about: "" });
+  }, [currentUser, isOpen]);
 
   function handleChange(e) {
     setUser({ ...user, [e.target.name]: e.target.value });

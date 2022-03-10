@@ -1,14 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
-function Card({
-  card,
-  onCardClick,
-  onCardLike,
-  onCardDelete,
-  onConfirmDelete,
-}) {
-  const [_isLiked, _setIsLiked] = useState(false);
+function Card({ card, onCardClick, onCardLike, onConfirmDelete }) {
   const { _id } = useContext(CurrentUserContext);
   const isOwn = card.owner._id === _id;
   const isLiked = card.likes.some((i) => i._id === _id);
@@ -29,7 +22,6 @@ function Card({
           aria-label="Удалить"
           type="button"
           className="place__delete"
-          // onClick={onCardDelete.bind(this, card._id)}
           onClick={onConfirmDelete.bind(this, card._id)}
         ></button>
       )}

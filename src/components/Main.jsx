@@ -8,7 +8,6 @@ function Main({
   onAddPlace,
   onEditAvatar,
   onCardClick,
-  onCardDelete,
   onCardLike,
   onConfirmDelete,
 }) {
@@ -47,7 +46,6 @@ function Main({
             card={card}
             onCardClick={onCardClick}
             onCardLike={onCardLike}
-            onCardDelete={onCardDelete}
             onConfirmDelete={onConfirmDelete}
           />
         ))}

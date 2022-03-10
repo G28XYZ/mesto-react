@@ -136,7 +136,6 @@ function App() {
           onAddPlace={onAddPlace}
           onEditAvatar={onEditAvatar}
           onCardClick={handleCardClick}
-          onCardDelete={handleCardDelete}
           onCardLike={handleCardLike}
           onConfirmDelete={handleConfirmDelete}
         />
