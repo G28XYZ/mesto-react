@@ -1,3 +1,5 @@
+"use strict";
+
 import { token, address } from "../utils/constants.js";
 
 class Api {

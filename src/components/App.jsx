@@ -166,54 +166,56 @@ function App() {
   }
 
   return (
-    <CurrentUserContext.Provider value={currentUser}>
-      <div className="page">
-        <Header />
-        <Main
-          cards={cards}
-          onEditProfile={onEditProfile}
-          onAddPlace={onAddPlace}
-          onEditAvatar={onEditAvatar}
-          onCardClick={handleCardClick}
-          onCardLike={handleCardLike}
-          onConfirmDelete={handleConfirmDelete}
-        />
-        <Footer />
-      </div>
-      <RenderLoadingContext.Provider value={loading}>
-        <EditProfilePopup
+    <>
+      <CurrentUserContext.Provider value={currentUser}>
+        <div className="page">
+          <Header />
+          <Main
+            cards={cards}
+            onEditProfile={onEditProfile}
+            onAddPlace={onAddPlace}
+            onEditAvatar={onEditAvatar}
+            onCardClick={handleCardClick}
+            onCardLike={handleCardLike}
+            onConfirmDelete={handleConfirmDelete}
+          />
+          <Footer />
+        </div>
+        <RenderLoadingContext.Provider value={loading}>
+          <EditProfilePopup
+            onClose={closeAllPopups}
+            isOpen={isEditProfilePopupOpen}
+            onUpdateUser={onUpdateUser}
+          />
+
+          <AddPlacePopup
+            onClose={closeAllPopups}
+            isOpen={isAddPlacePopupOpen}
+            onUpdateCards={onUpdateCards}
+          />
+
+          <EditAvatarPopup
+            isOpen={isEditAvatarPopupOpen}
+            onClose={closeAllPopups}
+            onUpdateAvatar={onUpdateAvatar}
+          />
+        </RenderLoadingContext.Provider>
+
+        <ConfirmDeletePopup
+          isOpen={isDeletePopupOpen}
           onClose={closeAllPopups}
-          isOpen={isEditProfilePopupOpen}
-          onUpdateUser={onUpdateUser}
+          onCardDelete={handleCardDelete}
         />
 
-        <AddPlacePopup
+        <ErrorPopup
+          isOpen={errorPopup.isOpen}
           onClose={closeAllPopups}
-          isOpen={isAddPlacePopupOpen}
-          onUpdateCards={onUpdateCards}
+          message={errorPopup.message}
         />
 
-        <EditAvatarPopup
-          isOpen={isEditAvatarPopupOpen}
-          onClose={closeAllPopups}
-          onUpdateAvatar={onUpdateAvatar}
-        />
-      </RenderLoadingContext.Provider>
-
-      <ConfirmDeletePopup
-        isOpen={isDeletePopupOpen}
-        onClose={closeAllPopups}
-        onCardDelete={handleCardDelete}
-      />
-
-      <ErrorPopup
-        isOpen={errorPopup.isOpen}
-        onClose={closeAllPopups}
-        message={errorPopup.message}
-      />
-
-      <ImagePopup card={selectedCard} onClose={closeAllPopups} />
-    </CurrentUserContext.Provider>
+        <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+      </CurrentUserContext.Provider>
+    </>
   );
 }
 
