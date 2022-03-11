@@ -23,14 +23,11 @@ function EditProfilePopup({ onClose, isOpen, onUpdateUser }) {
     onUpdateUser(user);
   }
 
-  const toggleError = (msg) => `popup__error ${msg && " popup__error_visible"}`;
-
   // isDisabled = true если есть текст об ошибке или инпут пустой
   const isDisabled = useMemo(
     () =>
       Object.keys(error).some((e) => error[e]) ||
       Object.keys(user).some((u) => !user[u]),
-
     [user]
   );
 
@@ -55,7 +52,11 @@ function EditProfilePopup({ onClose, isOpen, onUpdateUser }) {
           onChange={handleChange}
           required
         />
-        <span className={toggleError(error.name)}>{error.name}</span>
+        <span
+          className={`popup__error ${error.name && "popup__error_visible"}`}
+        >
+          {error.name}
+        </span>
         <input
           placeholder="Работа"
           type="text"
@@ -67,7 +68,11 @@ function EditProfilePopup({ onClose, isOpen, onUpdateUser }) {
           onChange={handleChange}
           required
         />
-        <span className={toggleError(error.about)}>{error.about}</span>
+        <span
+          className={`popup__error ${error.about && "popup__error_visible"}`}
+        >
+          {error.about}
+        </span>
       </div>
     </PopupWithForm>
   );

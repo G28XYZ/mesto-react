@@ -21,12 +21,12 @@ function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
 
   function handleChange() {
     setError(avatar.current.validationMessage);
+
+    // isDisabled = true если есть тест об ошибке или инпут пустой
     if (!avatar.current.value || avatar.current.validationMessage)
       setIsDisabled(true);
     else setIsDisabled(false);
   }
-
-  const toggleError = (msg) => `popup__error ${msg && " popup__error_visible"}`;
 
   return (
     <PopupWithForm
@@ -48,7 +48,9 @@ function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar }) {
           className="popup__input popup__input_elem_link"
           required
         />
-        <span className={toggleError(error)}>{error}</span>
+        <span className={`popup__error ${error && "popup__error_visible"}`}>
+          {error}
+        </span>
       </div>
     </PopupWithForm>
   );

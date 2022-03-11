@@ -20,9 +20,6 @@ function AddPlacePopup({ isOpen, onClose, onUpdateCards }) {
     onUpdateCards(card);
   }
 
-  const toggleError = (msg) =>
-    msg ? "popup__error popup__error_visible" : "popup__error";
-
   // isDisabled = true если есть текст об ошибке или инпут пустой
   const isDisabled = useMemo(
     () =>
@@ -53,7 +50,11 @@ function AddPlacePopup({ isOpen, onClose, onUpdateCards }) {
           maxLength="30"
           onChange={handleChange}
         />
-        <span className={toggleError(error.name)}>{error.name}</span>
+        <span
+          className={`popup__error ${error.name && "popup__error_visible"}`}
+        >
+          {error.name}
+        </span>
         <input
           placeholder="Ссылка на картинку"
           type="url"
@@ -63,7 +64,11 @@ function AddPlacePopup({ isOpen, onClose, onUpdateCards }) {
           className="popup__input popup__input_elem_link"
           onChange={handleChange}
         />
-        <span className={toggleError(error.link)}>{error.link}</span>
+        <span
+          className={`popup__error ${error.link && "popup__error_visible"}`}
+        >
+          {error.link}
+        </span>
       </div>
     </PopupWithForm>
   );

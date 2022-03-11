@@ -10,14 +10,20 @@ import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 import ConfirmDeletePopup from "./ConfirmDeletePopup";
+import ErrorPopup from "./ErrorPopup";
+import { defaultUser } from "../utils/constants";
 
 function App() {
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
-  const [selectedCard, setSelectedCard] = useState({ isOpen: false });
-  const [currentUser, setCurrentUser] = useState({});
+  const [errorPopup, setErrorPopup] = useState({ isOpen: false });
+  const [selectedCard, setSelectedCard] = useState({
+    isOpen: false,
+    message: "",
+  });
+  const [currentUser, setCurrentUser] = useState(defaultUser);
   const [cards, setCards] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -28,7 +34,10 @@ function App() {
         setCards(cards);
       })
       .catch((err) =>
-        console.log(`Ошибка получения карточек/пользователя: ${err}`)
+        setErrorPopup({
+          isOpen: true,
+          message: `Ошибка получения карточек/пользователя: ${err}`,
+        })
       );
   }, []);
 
@@ -40,7 +49,12 @@ function App() {
       .then(() => {
         setCards((state) => state.filter((c) => c._id !== id));
       })
-      .catch((err) => console.log(`Ошибка удаления карточки: ${err}`));
+      .catch((err) =>
+        setErrorPopup({
+          isOpen: true,
+          message: `Ошибка удаления карточки: ${err}`,
+        })
+      );
     setIsDeletePopupOpen(false);
   }
 
@@ -58,10 +72,19 @@ function App() {
           state.map((c) => (c._id === card._id ? newCard : c))
         );
       })
-      .catch((err) => console.log(`Ошибка лайка карточки: ${err}`));
+      .catch((err) =>
+        setErrorPopup({
+          isOpen: true,
+          message: `Ошибка лайка карточки: ${err}`,
+        })
+      );
   }
 
-  function closeAllPopups() {
+  function closeAllPopups(msg = "") {
+    if (msg === "error") {
+      setErrorPopup({ ...errorPopup, isOpen: false });
+      return;
+    }
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
@@ -91,6 +114,7 @@ function App() {
   }
 
   function onUpdateUser(user) {
+    console.log("user");
     setLoading(true);
     api
       .patchProfile(user)
@@ -98,7 +122,12 @@ function App() {
         setCurrentUser(data);
         closeAllPopups();
       })
-      .catch((err) => console.log(`Ошибка изменения профиля: ${err}`))
+      .catch((err) =>
+        setErrorPopup({
+          isOpen: true,
+          message: `Ошибка изменения профиля: ${err}`,
+        })
+      )
       .finally(() => setLoading(false));
   }
 
@@ -110,7 +139,12 @@ function App() {
         setCurrentUser(user);
         closeAllPopups();
       })
-      .catch((err) => console.log(`Ошибка изменения аватар: ${err}`))
+      .catch((err) =>
+        setErrorPopup({
+          isOpen: true,
+          message: `Ошибка изменения аватар: ${err}`,
+        })
+      )
       .finally(() => setLoading(false));
   }
 
@@ -122,7 +156,12 @@ function App() {
         setCards([newCard, ...cards]);
         closeAllPopups();
       })
-      .catch((err) => console.log(`Ошибка добавления карточки: ${err}`))
+      .catch((err) =>
+        setErrorPopup({
+          isOpen: true,
+          message: `Ошибка добавления карточки: ${err}`,
+        })
+      )
       .finally(() => setLoading(false));
   }
 
@@ -165,6 +204,12 @@ function App() {
         isOpen={isDeletePopupOpen}
         onClose={closeAllPopups}
         onCardDelete={handleCardDelete}
+      />
+
+      <ErrorPopup
+        isOpen={errorPopup.isOpen}
+        onClose={closeAllPopups}
+        message={errorPopup.message}
       />
 
       <ImagePopup card={selectedCard} onClose={closeAllPopups} />
