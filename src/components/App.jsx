@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Footer from "./Footer";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Header from "./Header";
 import ImagePopup from "./ImagePopup";
 import Main from "./Main";
@@ -167,19 +167,30 @@ function App() {
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
-      <div className="page">
-        <Header />
-        <Main
-          cards={cards}
-          onEditProfile={onEditProfile}
-          onAddPlace={onAddPlace}
-          onEditAvatar={onEditAvatar}
-          onCardClick={handleCardClick}
-          onCardLike={handleCardLike}
-          onConfirmDelete={handleConfirmDelete}
-        />
-        <Footer />
-      </div>
+      <BrowserRouter>
+        <div className="page">
+          <Header />
+          <Routes>
+            <Route
+              path="/"
+              exact
+              element={
+                <Main
+                  cards={cards}
+                  onEditProfile={onEditProfile}
+                  onAddPlace={onAddPlace}
+                  onEditAvatar={onEditAvatar}
+                  onCardClick={handleCardClick}
+                  onCardLike={handleCardLike}
+                  onConfirmDelete={handleConfirmDelete}
+                />
+              }
+            />
+            <Route path="/sign-up" />
+            <Route path="/sign-in" />
+          </Routes>
+        </div>
+      </BrowserRouter>
 
       <RenderLoadingContext.Provider value={loading}>
         <EditProfilePopup
