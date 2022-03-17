@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Header from "./Header";
 import ImagePopup from "./ImagePopup";
 import Main from "./Main";
@@ -11,6 +11,7 @@ import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 import ConfirmDeletePopup from "./ConfirmDeletePopup";
 import ErrorPopup from "./ErrorPopup";
+import Login from "./Login";
 import { defaultUser } from "../utils/constants";
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
   const [currentUser, setCurrentUser] = useState(defaultUser);
   const [cards, setCards] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
     Promise.all([api.getUserInfo(), api.getCards()])
@@ -167,30 +169,34 @@ function App() {
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
-      <BrowserRouter>
-        <div className="page">
+      <div className="page">
+        <BrowserRouter>
           <Header />
           <Routes>
             <Route
               path="/"
               exact
               element={
-                <Main
-                  cards={cards}
-                  onEditProfile={onEditProfile}
-                  onAddPlace={onAddPlace}
-                  onEditAvatar={onEditAvatar}
-                  onCardClick={handleCardClick}
-                  onCardLike={handleCardLike}
-                  onConfirmDelete={handleConfirmDelete}
-                />
+                loggedIn ? (
+                  <Main
+                    cards={cards}
+                    onEditProfile={onEditProfile}
+                    onAddPlace={onAddPlace}
+                    onEditAvatar={onEditAvatar}
+                    onCardClick={handleCardClick}
+                    onCardLike={handleCardLike}
+                    onConfirmDelete={handleConfirmDelete}
+                  />
+                ) : (
+                  <Navigate to="/sign-in" />
+                )
               }
             />
-            <Route path="/sign-up" />
-            <Route path="/sign-in" />
+
+            <Route path="/sign-in" element={<Login />} />
           </Routes>
-        </div>
-      </BrowserRouter>
+        </BrowserRouter>
+      </div>
 
       <RenderLoadingContext.Provider value={loading}>
         <EditProfilePopup

@@ -59,3 +59,8 @@
 @import url(./blocks/footer/footer.css);
 @import url(./blocks/footer/__copyright/footer__copyright.css);
 /* </footer> */
+
+/* <login> */
+@import url(./blocks/login/login.css);
+@import url(./blocks/login/__form/login__form.css);
+/* </login> */
