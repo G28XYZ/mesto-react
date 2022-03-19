@@ -1,13 +1,23 @@
 function Login() {
   return (
-    <div className="auth">
+    <section className="auth">
       <h2 className="auth__title">Вход</h2>
       <form className="auth__form">
-        <input className="auth__title"></input>
-        <input className="auth__title"></input>
+        <div className="auth__input-container">
+          <input
+            type="email"
+            placeholder="Email"
+            className="auth__input"
+          ></input>
+          <input
+            type="password"
+            placeholder="Пароль"
+            className="auth__input"
+          ></input>
+        </div>
         <button className="auth__submit">Войти</button>
       </form>
-    </div>
+    </section>
   );
 }
 

@@ -63,4 +63,8 @@
 /* <login> */
 @import url(./blocks/auth/auth.css);
 @import url(./blocks/auth/__form/auth__form.css);
+@import url(./blocks/auth/__title/auth__title.css);
+@import url(./blocks/auth/__input/auth__input.css);
+@import url(./blocks/auth/__input-container/auth__input-container.css);
+@import url(./blocks/auth/__submit/auth__submit.css);
 /* </login> */
