@@ -12,6 +12,7 @@ import AddPlacePopup from "./AddPlacePopup";
 import ConfirmDeletePopup from "./ConfirmDeletePopup";
 import ErrorPopup from "./ErrorPopup";
 import Login from "./Login";
+import ProtectedRoute from "./ProtectedRoute";
 import { defaultUser } from "../utils/constants";
 
 function App() {
@@ -167,32 +168,34 @@ function App() {
       .finally(() => setLoading(false));
   }
 
+  const propsMain = {
+    cards: cards,
+    onEditProfile: onEditProfile,
+    onAddPlace: onAddPlace,
+    onEditAvatar: onEditAvatar,
+    onCardClick: handleCardClick,
+    onCardLike: handleCardLike,
+    onConfirmDelete: handleConfirmDelete,
+    loggedIn: loggedIn,
+  };
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
+        <Header />
         <BrowserRouter>
-          <Header />
           <Routes>
             <Route
-              path="/"
-              exact
+              path="*"
               element={
-                loggedIn ? (
-                  <Main
-                    cards={cards}
-                    onEditProfile={onEditProfile}
-                    onAddPlace={onAddPlace}
-                    onEditAvatar={onEditAvatar}
-                    onCardClick={handleCardClick}
-                    onCardLike={handleCardLike}
-                    onConfirmDelete={handleConfirmDelete}
-                  />
-                ) : (
-                  <Navigate to="/sign-in" />
-                )
+                loggedIn ? <Navigate to="/" /> : <Navigate to="/sign-in" />
               }
             />
-
+            <Route
+              exact
+              path="/"
+              element={<ProtectedRoute Component={Main} {...propsMain} />}
+            />
             <Route path="/sign-in" element={<Login />} />
           </Routes>
         </BrowserRouter>
