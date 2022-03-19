@@ -12,6 +12,7 @@ import AddPlacePopup from "./AddPlacePopup";
 import ConfirmDeletePopup from "./ConfirmDeletePopup";
 import ErrorPopup from "./ErrorPopup";
 import Login from "./Login";
+import Register from "./Register";
 import ProtectedRoute from "./ProtectedRoute";
 import { defaultUser } from "../utils/constants";
 
@@ -197,6 +198,7 @@ function App() {
               element={<ProtectedRoute Component={Main} {...propsMain} />}
             />
             <Route path="/sign-in" element={<Login />} />
+            <Route path="/sign-up" element={<Register />} />
           </Routes>
         </BrowserRouter>
       </div>

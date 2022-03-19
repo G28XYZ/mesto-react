@@ -61,6 +61,6 @@
 /* </footer> */
 
 /* <login> */
-@import url(./blocks/login/login.css);
-@import url(./blocks/login/__form/login__form.css);
+@import url(./blocks/auth/auth.css);
+@import url(./blocks/auth/__form/auth__form.css);
 /* </login> */
