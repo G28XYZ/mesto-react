@@ -1,7 +1,8 @@
 .header {
   position: relative;
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
   row-gap: 41px;
   width: 100%;
   max-width: 880px;

@@ -67,4 +67,5 @@
 @import url(./blocks/auth/__input/auth__input.css);
 @import url(./blocks/auth/__input-container/auth__input-container.css);
 @import url(./blocks/auth/__submit/auth__submit.css);
+@import url(./blocks/auth/__link/auth__link.css);
 /* </login> */

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate, Link } from "react-router-dom";
 import Header from "./Header";
 import ImagePopup from "./ImagePopup";
 import Main from "./Main";
@@ -183,8 +183,8 @@ function App() {
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
-        <Header />
         <BrowserRouter>
+          <Header loggedIn={loggedIn} email={"alex@aalex"} />
           <Routes>
             <Route
               path="*"
@@ -197,8 +197,14 @@ function App() {
               path="/"
               element={<ProtectedRoute Component={Main} {...propsMain} />}
             />
-            <Route path="/sign-in" element={<Login />} />
-            <Route path="/sign-up" element={<Register />} />
+            <Route
+              path="/sign-in"
+              element={loggedIn ? <Navigate to="/" /> : <Login />}
+            />
+            <Route
+              path="/sign-up"
+              element={loggedIn ? <Navigate to="/" /> : <Register />}
+            />
           </Routes>
         </BrowserRouter>
       </div>
