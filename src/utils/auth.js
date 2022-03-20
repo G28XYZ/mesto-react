@@ -5,6 +5,7 @@ class Auth {
     this._address = address;
     this._headers = {
       "Content-Type": "application/json",
+      "Content-Type": "application/json",
     };
   }
 
@@ -15,7 +16,6 @@ class Auth {
   };
 
   registration({ email, password }) {
-    console.log({ password, email });
     return fetch(`${this._address}/signup`, {
       method: "POST",
       headers: this._headers,

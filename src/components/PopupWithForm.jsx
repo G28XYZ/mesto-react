@@ -11,8 +11,7 @@ function PopupWithForm({
   onSubmit,
   isDisabled,
 }) {
-  const { popupLoading } = useContext(RenderLoadingContext);
-
+  const loading = useContext(RenderLoadingContext);
   return (
     <div className={`popup popup_type_${name} ${isOpen && "popup_opened"}`}>
       <div className="popup__container">
@@ -30,9 +29,9 @@ function PopupWithForm({
             className={`popup__button ${
               isDisabled && "popup__button_disabled"
             }`}
-            disabled={isDisabled || popupLoading || !isOpen}
+            disabled={isDisabled || loading || !isOpen}
           >
-            {popupLoading ? "Сохранение..." : textButton}
+            {loading ? "Сохранение..." : textButton}
           </button>
         </form>
       </div>

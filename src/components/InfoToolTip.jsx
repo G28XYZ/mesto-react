@@ -1,7 +1,7 @@
 import successImage from "../images/success.png";
 import deniedImage from "../images/denied.png";
 
-const InfoToolTip = ({ isOpen, success, onClose }) => {
+const InfoToolTip = ({ isOpen, info, onClose }) => {
   const messages = {
     false: {
       image: deniedImage,
@@ -24,10 +24,12 @@ const InfoToolTip = ({ isOpen, success, onClose }) => {
         ></button>
         <img
           className="popup__icon"
-          src={messages[success].image}
+          src={messages[info].image}
           style={{ paddingTop: 24, paddingBottom: 32 }}
         />
-        <h3 className="popup__title">{messages[success].message}</h3>
+        <h3 className="popup__title" style={{ paddingBottom: 25 }}>
+          {messages[info].message}{" "}
+        </h3>
       </div>
     </div>
   );

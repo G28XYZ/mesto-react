@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { BrowserRouter, Route, Routes, Navigate, Link } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Header from "./Header";
 import ImagePopup from "./ImagePopup";
 import Main from "./Main";
-import Spinner from "./Spinner";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import { RenderLoadingContext } from "../contexts/RenderLoadingContext";
 
@@ -36,39 +35,34 @@ function App() {
   });
   const [currentUser, setCurrentUser] = useState(defaultUser);
   const [cards, setCards] = useState([]);
-  const [loading, setLoading] = useState({
-    popupLoading: false,
-    pageLoading: true,
-  });
+  const [loading, setLoading] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [infoRegistr, setInfoRegistr] = useState(false);
 
   useEffect(() => {
-    Promise.all([api.getUserInfo(), api.getCards()])
-      .then(([user, cards]) => {
-        setCurrentUser({ ...currentUser, ...user });
-        setCards(cards);
-        handleTokenCheck();
-      })
-      .catch((err) =>
-        setErrorPopup({
-          isOpen: true,
-          message: `Ошибка получения карточек/пользователя: ${err}`,
+    handleTokenCheck();
+    if (loggedIn) {
+      Promise.all([api.getUserInfo(), api.getCards()])
+        .then(([user, cards]) => {
+          setCurrentUser({ ...currentUser, ...user });
+          setCards(cards);
         })
-      );
-  }, []);
+        .catch((err) =>
+          setErrorPopup({
+            isOpen: true,
+            message: `Ошибка получения карточек/пользователя: ${err}`,
+          })
+        );
+    }
+  }, [loggedIn]);
 
   function handleTokenCheck() {
     const jwt = localStorage.getItem("jwt");
     if (jwt) {
-      auth
-        .getUser(jwt)
-        .then(({ data: { email } }) => {
-          setCurrentUser({ ...currentUser, email });
-          setLoggedIn(true);
-        })
-        .finally(() => setLoading({ ...loading, pageLoading: false }));
-    } else {
-      setLoading({ ...loading, pageLoading: false });
+      auth.getUser(jwt).then(({ data: { email } }) => {
+        setCurrentUser({ ...currentUser, email });
+        setLoggedIn(true);
+      });
     }
   }
 
@@ -139,7 +133,7 @@ function App() {
       .authorization(data)
       .then((res) => {
         localStorage.setItem("jwt", res.token);
-        setLoggedIn(true);
+        handleTokenCheck();
       })
       .catch(() => setIsInfoToolTipOpen(true));
   }
@@ -148,15 +142,17 @@ function App() {
     e.preventDefault();
     auth
       .registration(data)
-      .then(() => {
+      .then(({ data: { email } }) => {
+        setCurrentUser({ ...currentUser, email });
+        setInfoRegistr(true);
         setIsInfoToolTipOpen(true);
-        handleAutohrization(e, data);
       })
       .catch(() => setIsInfoToolTipOpen(true));
   }
 
-  function handleExitProfile(e) {
+  function handleExitProfile() {
     localStorage.removeItem("jwt");
+    setCurrentUser(defaultUser);
     setLoggedIn(false);
   }
 
@@ -173,7 +169,6 @@ function App() {
   }
 
   function onUpdateUser(user) {
-    console.log(currentUser);
     setLoading(true);
     api
       .patchProfile(user)
@@ -240,43 +235,40 @@ function App() {
       <div className="page">
         <BrowserRouter>
           <Header loggedIn={loggedIn} onExitProfile={handleExitProfile} />
-          {loading.pageLoading ? (
-            <Spinner />
-          ) : (
-            <Routes>
-              <Route
-                path="*"
-                element={
-                  loggedIn ? <Navigate to="/" /> : <Navigate to="/sign-in" />
-                }
-              />
-              <Route
-                exact
-                path="/"
-                element={<ProtectedRoute Component={Main} {...propsMain} />}
-              />
-              <Route
-                path="/sign-in"
-                element={
-                  loggedIn ? (
-                    <Navigate to="/" />
-                  ) : (
-                    <Login onSubmit={handleAutohrization} />
-                  )
-                }
-              />
-              <Route
-                path="/sign-up"
-                element={
-                  loggedIn ? (
-                    <Navigate to="/" />
-                  ) : (
-                    <Register onSubmit={handleRegistration} />
-                  )
-                }
-              />
-            </Routes>
-          )}
+
+          <Routes>
+            <Route
+              path="*"
+              element={
+                loggedIn ? <Navigate to="/" /> : <Navigate to="/sign-in" />
+              }
+            />
+            <Route
+              exact
+              path="/"
+              element={<ProtectedRoute Component={Main} {...propsMain} />}
+            />
+            <Route
+              path="/sign-in"
+              element={
+                loggedIn ? (
+                  <Navigate to="/" />
+                ) : (
+                  <Login onSubmit={handleAutohrization} loggedIn={loggedIn} />
+                )
+              }
+            />
+            <Route
+              path="/sign-up"
+              element={
+                loggedIn ? (
+                  <Navigate to="/" />
+                ) : (
+                  <Register onSubmit={handleRegistration} />
+                )
+              }
+            />
+          </Routes>
         </BrowserRouter>
       </div>
 
@@ -314,7 +306,7 @@ function App() {
 
       <InfoToolTip
         isOpen={isInfoToolTipOpen}
-        success={loggedIn}
+        info={infoRegistr}
         onClose={closeAllPopups}
       />
 
