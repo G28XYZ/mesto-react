@@ -5,7 +5,10 @@ import ImagePopup from "./ImagePopup";
 import Main from "./Main";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import { RenderLoadingContext } from "../contexts/RenderLoadingContext";
+
 import api from "../utils/api";
+import auth from "../utils/auth";
+
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
@@ -31,19 +34,29 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
 
-  useEffect(() => {
-    Promise.all([api.getUserInfo(), api.getCards()])
-      .then(([user, cards]) => {
-        setCurrentUser(user);
-        setCards(cards);
-      })
-      .catch((err) =>
-        setErrorPopup({
-          isOpen: true,
-          message: `Ошибка получения карточек/пользователя: ${err}`,
-        })
-      );
-  }, []);
+  // useEffect(() => {
+  //   Promise.all([api.getUserInfo(), api.getCards()])
+  //     .then(([user, cards]) => {
+  //       setCurrentUser(user);
+  //       setCards(cards);
+  //     })
+  //     .catch((err) =>
+  //       setErrorPopup({
+  //         isOpen: true,
+  //         message: `Ошибка получения карточек/пользователя: ${err}`,
+  //       })
+  //     );
+  // }, []);
+
+  useEffect(() => handleTokenCheck());
+
+  function handleTokenCheck() {
+    const jwt = localStorage.getItem("jwt");
+    console.log(jwt);
+    if (jwt) {
+      auth.getUser(jwt).then((res) => console.log(res));
+    }
+  }
 
   function handleCardDelete(e) {
     e.preventDefault();
