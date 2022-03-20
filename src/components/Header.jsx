@@ -1,9 +1,12 @@
+import { useContext } from "react";
 import logo from "../images/mesto-logo.svg";
 import { useLocation, Link } from "react-router-dom";
+import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
-function Header({ loggedIn, email }) {
+function Header({ loggedIn, onExitProfile }) {
   const location = useLocation();
   const path = location.pathname;
+  const { email } = useContext(CurrentUserContext);
 
   const links = {
     "/sign-up": (
@@ -17,7 +20,11 @@ function Header({ loggedIn, email }) {
       </Link>
     ),
     "/": (
-      <Link to="/sign-in" className="header__link header__link_blackout">
+      <Link
+        to="/sign-in"
+        className="header__link header__link_blackout"
+        onClick={onExitProfile}
+      >
         Выйти
       </Link>
     ),

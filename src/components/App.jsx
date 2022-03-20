@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes, Navigate, Link } from "react-router-dom";
 import Header from "./Header";
 import ImagePopup from "./ImagePopup";
 import Main from "./Main";
+import Spinner from "./Spinner";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import { RenderLoadingContext } from "../contexts/RenderLoadingContext";
 
@@ -35,7 +36,10 @@ function App() {
   });
   const [currentUser, setCurrentUser] = useState(defaultUser);
   const [cards, setCards] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState({
+    popupLoading: false,
+    pageLoading: true,
+  });
   const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
@@ -56,11 +60,15 @@ function App() {
   function handleTokenCheck() {
     const jwt = localStorage.getItem("jwt");
     if (jwt) {
-      auth.getUser(jwt).then(({ data: { email, _id } }) => {
-        setCurrentUser({ ...currentUser, email });
-        setLoggedIn(true);
-        console.log(currentUser);
-      });
+      auth
+        .getUser(jwt)
+        .then(({ data: { email } }) => {
+          setCurrentUser({ ...currentUser, email });
+          setLoggedIn(true);
+        })
+        .finally(() => setLoading({ ...loading, pageLoading: false }));
+    } else {
+      setLoading({ ...loading, pageLoading: false });
     }
   }
 
@@ -132,7 +140,6 @@ function App() {
       .then((res) => {
         localStorage.setItem("jwt", res.token);
         setLoggedIn(true);
-        setIsInfoToolTipOpen(true);
       })
       .catch(() => setIsInfoToolTipOpen(true));
   }
@@ -141,8 +148,16 @@ function App() {
     e.preventDefault();
     auth
       .registration(data)
-      .then((res) => console.log(res))
+      .then(() => {
+        setIsInfoToolTipOpen(true);
+        handleAutohrization(e, data);
+      })
       .catch(() => setIsInfoToolTipOpen(true));
+  }
+
+  function handleExitProfile(e) {
+    localStorage.removeItem("jwt");
+    setLoggedIn(false);
   }
 
   function onEditProfile() {
@@ -224,40 +239,44 @@ function App() {
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
         <BrowserRouter>
-          <Header loggedIn={loggedIn} email={currentUser.email} />
-          <Routes>
-            <Route
-              path="*"
-              element={
-                loggedIn ? <Navigate to="/" /> : <Navigate to="/sign-in" />
-              }
-            />
-            <Route
-              exact
-              path="/"
-              element={<ProtectedRoute Component={Main} {...propsMain} />}
-            />
-            <Route
-              path="/sign-in"
-              element={
-                loggedIn ? (
-                  <Navigate to="/" />
-                ) : (
-                  <Login onSubmit={handleAutohrization} />
-                )
-              }
-            />
-            <Route
-              path="/sign-up"
-              element={
-                loggedIn ? (
-                  <Navigate to="/" />
-                ) : (
-                  <Register onSubmit={handleRegistration} />
-                )
-              }
-            />
-          </Routes>
+          <Header loggedIn={loggedIn} onExitProfile={handleExitProfile} />
+          {loading.pageLoading ? (
+            <Spinner />
+          ) : (
+            <Routes>
+              <Route
+                path="*"
+                element={
+                  loggedIn ? <Navigate to="/" /> : <Navigate to="/sign-in" />
+                }
+              />
+              <Route
+                exact
+                path="/"
+                element={<ProtectedRoute Component={Main} {...propsMain} />}
+              />
+              <Route
+                path="/sign-in"
+                element={
+                  loggedIn ? (
+                    <Navigate to="/" />
+                  ) : (
+                    <Login onSubmit={handleAutohrization} />
+                  )
+                }
+              />
+              <Route
+                path="/sign-up"
+                element={
+                  loggedIn ? (
+                    <Navigate to="/" />
+                  ) : (
+                    <Register onSubmit={handleRegistration} />
+                  )
+                }
+              />
+            </Routes>
+          )}
         </BrowserRouter>
       </div>
 
