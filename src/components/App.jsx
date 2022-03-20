@@ -14,6 +14,8 @@ import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 import ConfirmDeletePopup from "./ConfirmDeletePopup";
 import ErrorPopup from "./ErrorPopup";
+import InfoToolTip from "./InfoToolTip";
+
 import Login from "./Login";
 import Register from "./Register";
 import ProtectedRoute from "./ProtectedRoute";
@@ -24,6 +26,8 @@ function App() {
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
+  const [isInfoToolTipOpen, setIsInfoToolTipOpen] = useState(false);
+
   const [errorPopup, setErrorPopup] = useState({ isOpen: false });
   const [selectedCard, setSelectedCard] = useState({
     isOpen: false,
@@ -34,27 +38,29 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
 
-  // useEffect(() => {
-  //   Promise.all([api.getUserInfo(), api.getCards()])
-  //     .then(([user, cards]) => {
-  //       setCurrentUser(user);
-  //       setCards(cards);
-  //     })
-  //     .catch((err) =>
-  //       setErrorPopup({
-  //         isOpen: true,
-  //         message: `Ошибка получения карточек/пользователя: ${err}`,
-  //       })
-  //     );
-  // }, []);
-
-  useEffect(() => handleTokenCheck());
+  useEffect(() => {
+    Promise.all([api.getUserInfo(), api.getCards()])
+      .then(([user, cards]) => {
+        setCurrentUser({ ...currentUser, ...user });
+        setCards(cards);
+        handleTokenCheck();
+      })
+      .catch((err) =>
+        setErrorPopup({
+          isOpen: true,
+          message: `Ошибка получения карточек/пользователя: ${err}`,
+        })
+      );
+  }, []);
 
   function handleTokenCheck() {
     const jwt = localStorage.getItem("jwt");
-    console.log(jwt);
     if (jwt) {
-      auth.getUser(jwt).then((res) => console.log(res));
+      auth.getUser(jwt).then(({ data: { email, _id } }) => {
+        setCurrentUser({ ...currentUser, email });
+        setLoggedIn(true);
+        console.log(currentUser);
+      });
     }
   }
 
@@ -106,6 +112,7 @@ function App() {
     setIsAddPlacePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
     setIsDeletePopupOpen(false);
+    setIsInfoToolTipOpen(false);
     setSelectedCard({ ...selectedCard, isOpen: false });
   }
 
@@ -116,6 +123,26 @@ function App() {
       link: event.target.src,
       name: event.target.alt,
     });
+  }
+
+  function handleAutohrization(e, data) {
+    e.preventDefault();
+    auth
+      .authorization(data)
+      .then((res) => {
+        localStorage.setItem("jwt", res.token);
+        setLoggedIn(true);
+        setIsInfoToolTipOpen(true);
+      })
+      .catch(() => setIsInfoToolTipOpen(true));
+  }
+
+  function handleRegistration(e, data) {
+    e.preventDefault();
+    auth
+      .registration(data)
+      .then((res) => console.log(res))
+      .catch(() => setIsInfoToolTipOpen(true));
   }
 
   function onEditProfile() {
@@ -131,12 +158,12 @@ function App() {
   }
 
   function onUpdateUser(user) {
-    console.log("user");
+    console.log(currentUser);
     setLoading(true);
     api
       .patchProfile(user)
       .then((data) => {
-        setCurrentUser(data);
+        setCurrentUser({ ...currentUser, ...data });
         closeAllPopups();
       })
       .catch((err) =>
@@ -153,7 +180,7 @@ function App() {
     api
       .patchAvatar(avatar)
       .then((user) => {
-        setCurrentUser(user);
+        setCurrentUser(...currentUser, ...user);
         closeAllPopups();
       })
       .catch((err) =>
@@ -197,7 +224,7 @@ function App() {
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
         <BrowserRouter>
-          <Header loggedIn={loggedIn} email={"alex@aalex"} />
+          <Header loggedIn={loggedIn} email={currentUser.email} />
           <Routes>
             <Route
               path="*"
@@ -212,11 +239,23 @@ function App() {
             />
             <Route
               path="/sign-in"
-              element={loggedIn ? <Navigate to="/" /> : <Login />}
+              element={
+                loggedIn ? (
+                  <Navigate to="/" />
+                ) : (
+                  <Login onSubmit={handleAutohrization} />
+                )
+              }
             />
             <Route
               path="/sign-up"
-              element={loggedIn ? <Navigate to="/" /> : <Register />}
+              element={
+                loggedIn ? (
+                  <Navigate to="/" />
+                ) : (
+                  <Register onSubmit={handleRegistration} />
+                )
+              }
             />
           </Routes>
         </BrowserRouter>
@@ -252,6 +291,12 @@ function App() {
         isOpen={errorPopup.isOpen}
         onClose={closeAllPopups}
         message={errorPopup.message}
+      />
+
+      <InfoToolTip
+        isOpen={isInfoToolTipOpen}
+        success={loggedIn}
+        onClose={closeAllPopups}
       />
 
       <ImagePopup card={selectedCard} onClose={closeAllPopups} />

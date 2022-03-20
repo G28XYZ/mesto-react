@@ -1,4 +1,4 @@
-import { address, addressAuth } from "./constants";
+import { addressAuth } from "./constants";
 
 class Auth {
   constructor(address) {
@@ -14,8 +14,9 @@ class Auth {
       : Promise.reject(`Ошибка ${response.status}`);
   };
 
-  signUp(password, email) {
-    return fetch(`${address}/signup`, {
+  registration({ email, password }) {
+    console.log({ password, email });
+    return fetch(`${this._address}/signup`, {
       method: "POST",
       headers: this._headers,
       body: JSON.stringify({
@@ -25,8 +26,8 @@ class Auth {
     }).then(this._handleResponse);
   }
 
-  signIn(password, email) {
-    return fetch(`${address}/signin`, {
+  authorization({ email, password }) {
+    return fetch(`${this._address}/signin`, {
       method: "POST",
       headers: this._headers,
       body: JSON.stringify({
@@ -37,7 +38,7 @@ class Auth {
   }
 
   getUser(jwt) {
-    return fetch(`${address}/users/me`, {
+    return fetch(`${this._address}/users/me`, {
       method: "GET",
       headers: { ...this._headers, Authorization: `Bearer ${jwt}` },
     }).then(this._handleResponse);
