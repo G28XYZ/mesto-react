@@ -16,9 +16,10 @@ function Header({ loggedIn, onExitProfile }) {
   }, [loggedIn]);
 
   const toggleNav = () => {
-    console.log("open nav");
     setNavActive(!navActive);
   };
+
+  const classHeaderAuthLogged = `header__auth ${loggedIn && "header__auth_logged"}`;
 
   const links = {
     "/sign-up": (
@@ -32,11 +33,7 @@ function Header({ loggedIn, onExitProfile }) {
       </Link>
     ),
     "/": (
-      <Link
-        to="/sign-in"
-        className="header__link header__link_blackout"
-        onClick={onExitProfile}
-      >
+      <Link to="/sign-in" className="header__link header__link_blackout" onClick={onExitProfile}>
         Выйти
       </Link>
     ),
@@ -44,23 +41,17 @@ function Header({ loggedIn, onExitProfile }) {
 
   return (
     <header className="header">
-      <div
-        className={`header__container ${
-          loggedIn && "header__container_logged"
-        }`}
-      >
+      <div className={`header__container ${loggedIn && "header__container_logged"}`}>
         <div className="header__title">
           <img src={logo} alt="Логотип - место" className="header__logo" />
           {loggedIn && (
             <button
-              className={`header__button ${
-                navActive && "header__button_active"
-              }`}
+              className={`header__button ${navActive && "header__button_active"}`}
               onClick={toggleNav}
             ></button>
           )}
         </div>
-        <div className={`header__auth ${navActive && "header__auth_active"}`}>
+        <div className={`${classHeaderAuthLogged} ${navActive && "header__auth_logged_active"}`}>
           <p className="header__email">{loggedIn && email}</p>
           {links[path]}
         </div>

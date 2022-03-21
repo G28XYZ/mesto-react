@@ -37,7 +37,7 @@ function App() {
   const [cards, setCards] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
-  const [infoRegistr, setInfoRegistr] = useState(false);
+  const [infoRegister, setInfoRegister] = useState(false);
 
   useEffect(() => {
     handleTokenCheck();
@@ -93,9 +93,7 @@ function App() {
     api
       .likeCard(card._id, isLiked)
       .then((newCard) => {
-        setCards((state) =>
-          state.map((c) => (c._id === card._id ? newCard : c))
-        );
+        setCards((state) => state.map((c) => (c._id === card._id ? newCard : c)));
       })
       .catch((err) =>
         setErrorPopup({
@@ -127,7 +125,7 @@ function App() {
     });
   }
 
-  function handleAutohrization(e, data) {
+  function handleAuthorization(e, data) {
     e.preventDefault();
     auth
       .authorization(data)
@@ -138,14 +136,15 @@ function App() {
       .catch(() => setIsInfoToolTipOpen(true));
   }
 
-  function handleRegistration(e, data) {
+  function handleRegistration(e, data, navigate) {
     e.preventDefault();
     auth
       .registration(data)
       .then(({ data: { email } }) => {
         setCurrentUser({ ...currentUser, email });
-        setInfoRegistr(true);
+        setInfoRegister(true);
         setIsInfoToolTipOpen(true);
+        navigate();
       })
       .catch(() => setIsInfoToolTipOpen(true));
   }
@@ -237,36 +236,21 @@ function App() {
           <Header loggedIn={loggedIn} onExitProfile={handleExitProfile} />
 
           <Routes>
-            <Route
-              path="*"
-              element={
-                loggedIn ? <Navigate to="/" /> : <Navigate to="/sign-in" />
-              }
-            />
-            <Route
-              exact
-              path="/"
-              element={<ProtectedRoute Component={Main} {...propsMain} />}
-            />
+            <Route path="*" element={loggedIn ? <Navigate to="/" /> : <Navigate to="/sign-in" />} />
+            <Route exact path="/" element={<ProtectedRoute Component={Main} {...propsMain} />} />
             <Route
               path="/sign-in"
               element={
                 loggedIn ? (
                   <Navigate to="/" />
                 ) : (
-                  <Login onSubmit={handleAutohrization} loggedIn={loggedIn} />
+                  <Login onSubmit={handleAuthorization} loggedIn={loggedIn} />
                 )
               }
             />
             <Route
               path="/sign-up"
-              element={
-                loggedIn ? (
-                  <Navigate to="/" />
-                ) : (
-                  <Register onSubmit={handleRegistration} />
-                )
-              }
+              element={loggedIn ? <Navigate to="/" /> : <Register onSubmit={handleRegistration} />}
             />
           </Routes>
         </BrowserRouter>
@@ -304,11 +288,7 @@ function App() {
         message={errorPopup.message}
       />
 
-      <InfoToolTip
-        isOpen={isInfoToolTipOpen}
-        info={infoRegistr}
-        onClose={closeAllPopups}
-      />
+      <InfoToolTip isOpen={isInfoToolTipOpen} info={infoRegister} onClose={closeAllPopups} />
 
       <ImagePopup card={selectedCard} onClose={closeAllPopups} />
     </CurrentUserContext.Provider>

@@ -11,8 +11,8 @@ function Register({ onSubmit }) {
   };
 
   const handleSubmit = (e) => {
-    navigate("/sign-in");
-    onSubmit(e, formData);
+    const navogateFunc = () => navigate("/sign-in");
+    onSubmit(e, formData, navogateFunc);
   };
 
   return (
